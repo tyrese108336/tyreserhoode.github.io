@@ -1,0 +1,2854 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Royal Arena Chess</title>
+
+<style>
+*{
+ box-sizing:border-box;
+ margin:0;
+ padding:0;
+}
+
+:root{
+ --bg:#060914;
+ --panel:#10172a;
+ --panel2:#151e35;
+ --text:#f7f9ff;
+ --muted:#8d99b5;
+ --purple:#8167ff;
+ --cyan:#35d9ff;
+ --gold:#ffd166;
+ --green:#36df91;
+ --red:#ff5577;
+}
+
+body{
+ min-height:100vh;
+ background:
+ radial-gradient(circle at 10% 5%,rgba(129,103,255,.2),transparent 30%),
+ radial-gradient(circle at 90% 15%,rgba(53,217,255,.12),transparent 30%),
+ linear-gradient(145deg,#040711,#0a1020 55%,#060914);
+ color:var(--text);
+ font-family:Arial,Helvetica,sans-serif;
+}
+
+button{
+ font:inherit;
+ cursor:pointer;
+ border:0;
+}
+
+.hidden{
+ display:none!important;
+}
+
+/* ================= HEADER ================= */
+
+.app{
+ width:min(1400px,95%);
+ margin:auto;
+ padding:18px 0 50px;
+}
+
+.top{
+ height:70px;
+ display:flex;
+ align-items:center;
+ justify-content:space-between;
+ margin-bottom:30px;
+}
+
+.logo{
+ display:flex;
+ align-items:center;
+ gap:12px;
+}
+
+.logoIcon{
+ width:50px;
+ height:50px;
+ border-radius:16px;
+ display:grid;
+ place-items:center;
+ font-size:29px;
+ background:linear-gradient(135deg,#8067ff,#35d9ff);
+ box-shadow:0 12px 35px rgba(128,103,255,.35);
+}
+
+.logoText{
+ font-size:19px;
+ font-weight:900;
+ letter-spacing:.5px;
+}
+
+.logoText small{
+ display:block;
+ color:var(--cyan);
+ font-size:9px;
+ letter-spacing:4px;
+ margin-top:3px;
+}
+
+.wallet{
+ display:flex;
+ align-items:center;
+ gap:10px;
+}
+
+.coins{
+ padding:12px 17px;
+ border-radius:13px;
+ background:rgba(255,255,255,.06);
+ border:1px solid rgba(255,255,255,.08);
+ font-weight:900;
+ color:var(--gold);
+}
+
+/* ================= HOME ================= */
+
+.hero{
+ text-align:center;
+ max-width:850px;
+ margin:20px auto 35px;
+}
+
+.tag{
+ display:inline-block;
+ padding:8px 14px;
+ border-radius:30px;
+ background:rgba(53,217,255,.08);
+ border:1px solid rgba(53,217,255,.2);
+ color:var(--cyan);
+ font-size:10px;
+ font-weight:900;
+ letter-spacing:2px;
+ margin-bottom:16px;
+}
+
+.hero h1{
+ font-size:clamp(42px,8vw,85px);
+ line-height:.94;
+ letter-spacing:-5px;
+ font-weight:900;
+}
+
+.hero h1 span{
+ background:linear-gradient(90deg,#fff,#a99cff,#35d9ff);
+ -webkit-background-clip:text;
+ color:transparent;
+}
+
+.hero p{
+ color:var(--muted);
+ margin-top:18px;
+ line-height:1.6;
+}
+
+.modes{
+ display:grid;
+ grid-template-columns:repeat(4,1fr);
+ gap:15px;
+}
+
+.mode{
+ min-height:185px;
+ padding:22px;
+ border-radius:23px;
+ text-align:left;
+ color:white;
+ transition:.2s;
+ border:1px solid rgba(255,255,255,.1);
+ position:relative;
+ overflow:hidden;
+}
+
+.mode:hover{
+ transform:translateY(-5px);
+ border-color:rgba(255,255,255,.3);
+}
+
+.modeIcon{
+ font-size:36px;
+}
+
+.mode h3{
+ margin:17px 0 7px;
+ font-size:19px;
+}
+
+.mode p{
+ color:rgba(255,255,255,.72);
+ font-size:11px;
+ line-height:1.5;
+}
+
+.mode span{
+ position:absolute;
+ right:13px;
+ top:13px;
+ background:rgba(0,0,0,.25);
+ padding:5px 8px;
+ border-radius:8px;
+ font-size:8px;
+ font-weight:900;
+}
+
+.m1{background:linear-gradient(145deg,#315fe2,#5935b8)}
+.m2{background:linear-gradient(145deg,#068e87,#1551a1)}
+.m3{background:linear-gradient(145deg,#c46d17,#7a2ec4)}
+.m4{background:linear-gradient(145deg,#263149,#111829)}
+
+.homePanels{
+ display:grid;
+ grid-template-columns:1fr 1fr;
+ gap:16px;
+ margin-top:18px;
+}
+
+.panel{
+ background:rgba(16,23,42,.9);
+ border:1px solid rgba(255,255,255,.08);
+ border-radius:21px;
+ padding:22px;
+}
+
+.panelTitle{
+ font-size:11px;
+ letter-spacing:2px;
+ font-weight:900;
+ color:#aeb9d2;
+ margin-bottom:17px;
+}
+
+.stats{
+ display:grid;
+ grid-template-columns:repeat(3,1fr);
+ gap:10px;
+}
+
+.stat{
+ padding:16px;
+ border-radius:14px;
+ background:rgba(255,255,255,.045);
+}
+
+.stat b{
+ display:block;
+ font-size:23px;
+}
+
+.stat small{
+ color:var(--muted);
+ font-size:9px;
+}
+
+.quick{
+ display:grid;
+ grid-template-columns:1fr 1fr;
+ gap:10px;
+}
+
+.quick button{
+ padding:15px;
+ border-radius:13px;
+ color:white;
+ background:#1b2741;
+ font-weight:800;
+}
+
+.quick .main{
+ background:linear-gradient(135deg,#8067ff,#35bfff);
+}
+
+/* ================= GAME ================= */
+
+#game{
+ display:none;
+}
+
+#game.active{
+ display:block;
+}
+
+.gameHeader{
+ display:flex;
+ align-items:center;
+ justify-content:space-between;
+ margin-bottom:15px;
+}
+
+.headerButton{
+ padding:11px 15px;
+ border-radius:12px;
+ color:white;
+ background:#151e34;
+ border:1px solid rgba(255,255,255,.08);
+}
+
+.gameName{
+ text-align:center;
+}
+
+.gameName h2{
+ font-size:19px;
+}
+
+.gameName small{
+ color:var(--muted);
+}
+
+.gameArea{
+ display:grid;
+ grid-template-columns:minmax(0,900px) 300px;
+ gap:20px;
+ justify-content:center;
+ align-items:start;
+}
+
+/* BIG BOARD */
+
+.boardOuter{
+ width:100%;
+ padding:11px;
+ border-radius:25px;
+ background:
+ linear-gradient(135deg,#252e47,#111726);
+ box-shadow:
+ 0 25px 90px rgba(0,0,0,.55),
+ 0 0 40px rgba(128,103,255,.08);
+}
+
+.board{
+ width:100%;
+ aspect-ratio:1/1;
+ display:grid;
+ grid-template-columns:repeat(8,1fr);
+ grid-template-rows:repeat(8,1fr);
+ overflow:hidden;
+ border-radius:14px;
+}
+
+.square{
+ width:100%;
+ height:100%;
+ display:grid;
+ place-items:center;
+ position:relative;
+ cursor:pointer;
+}
+
+.piece{
+ font-family:"Times New Roman",serif;
+ font-size:clamp(35px,8vw,82px);
+ line-height:1;
+ user-select:none;
+ z-index:2;
+ transition:.12s;
+ filter:drop-shadow(0 5px 4px rgba(0,0,0,.45));
+}
+
+.square:hover .piece{
+ transform:scale(1.08);
+}
+
+.whitePiece{
+ color:#fff;
+ text-shadow:
+ 0 2px 0 #777,
+ 0 5px 9px rgba(0,0,0,.65);
+}
+
+.blackPiece{
+ color:#11151c;
+ text-shadow:
+ 0 1px 0 #aaa,
+ 0 4px 8px rgba(0,0,0,.7);
+}
+
+.selected{
+ box-shadow:inset 0 0 0 5px #ffd166;
+}
+
+.legal::after{
+ content:"";
+ position:absolute;
+ width:22%;
+ height:22%;
+ border-radius:50%;
+ background:rgba(20,25,35,.42);
+}
+
+.capture::after{
+ content:"";
+ position:absolute;
+ inset:5px;
+ border:5px solid rgba(255,70,95,.65);
+ border-radius:12px;
+}
+
+.last{
+ box-shadow:inset 0 0 0 4px rgba(53,217,255,.28);
+}
+
+.check{
+ box-shadow:inset 0 0 0 7px rgba(255,60,80,.85);
+ animation:checkPulse .6s infinite alternate;
+}
+
+@keyframes checkPulse{
+ from{box-shadow:inset 0 0 0 5px rgba(255,60,80,.4)}
+ to{box-shadow:inset 0 0 0 8px rgba(255,60,80,.95)}
+}
+
+/* ================= SIDE ================= */
+
+.side{
+ display:flex;
+ flex-direction:column;
+ gap:12px;
+}
+
+.clock{
+ background:#11192d;
+ border:1px solid rgba(255,255,255,.08);
+ padding:17px;
+ border-radius:17px;
+}
+
+.clock.active{
+ border-color:var(--cyan);
+ box-shadow:0 0 25px rgba(53,217,255,.13);
+}
+
+.clockTop{
+ display:flex;
+ justify-content:space-between;
+ color:var(--muted);
+ font-size:10px;
+ margin-bottom:6px;
+}
+
+.clockTime{
+ font-size:34px;
+ font-weight:900;
+}
+
+.status{
+ padding:16px;
+ border-radius:15px;
+ background:rgba(53,217,255,.05);
+ border:1px solid rgba(53,217,255,.13);
+ color:#b7c3dc;
+ font-size:11px;
+ line-height:1.5;
+}
+
+.sideButtons{
+ display:grid;
+ grid-template-columns:1fr 1fr;
+ gap:9px;
+}
+
+.sideButtons button{
+ padding:13px 5px;
+ border-radius:11px;
+ color:white;
+ background:#18223a;
+ font-size:10px;
+ font-weight:800;
+}
+
+/* ================= MODALS ================= */
+
+.modal{
+ position:fixed;
+ inset:0;
+ background:rgba(1,4,11,.84);
+ backdrop-filter:blur(13px);
+ display:none;
+ align-items:center;
+ justify-content:center;
+ z-index:50;
+ padding:18px;
+}
+
+.modal.show{
+ display:flex;
+}
+
+.modalBox{
+ width:min(720px,100%);
+ max-height:90vh;
+ overflow:auto;
+ padding:27px;
+ border-radius:25px;
+ background:#10172a;
+ border:1px solid rgba(255,255,255,.12);
+ box-shadow:0 30px 100px rgba(0,0,0,.65);
+}
+
+.modalHeader{
+ display:flex;
+ align-items:center;
+ justify-content:space-between;
+ margin-bottom:22px;
+}
+
+.close{
+ width:37px;
+ height:37px;
+ border-radius:10px;
+ color:white;
+ background:#202a42;
+}
+
+/* ================= SHOP ================= */
+
+.shopGrid{
+ display:grid;
+ grid-template-columns:repeat(3,1fr);
+ gap:11px;
+}
+
+.shopCard{
+ background:#172139;
+ border:1px solid rgba(255,255,255,.07);
+ padding:14px;
+ border-radius:15px;
+}
+
+.shopPreview{
+ height:65px;
+ border-radius:10px;
+ margin-bottom:11px;
+}
+
+.shopCard h4{
+ font-size:13px;
+}
+
+.shopCard p{
+ color:var(--muted);
+ font-size:9px;
+ margin:5px 0 10px;
+ line-height:1.4;
+}
+
+.shopButton{
+ width:100%;
+ padding:10px;
+ border-radius:9px;
+ background:linear-gradient(135deg,#ffd166,#ff9b3d);
+ color:#17100a;
+ font-size:10px;
+ font-weight:900;
+}
+
+.equipped{
+ background:#35d991;
+ color:#07150f;
+}
+
+/* THEMES */
+
+.classic{
+ background:linear-gradient(90deg,#eee3c7 50%,#5f7c5a 50%);
+}
+
+.ocean{
+ background:linear-gradient(90deg,#d8f3fa 50%,#317895 50%);
+}
+
+.royal{
+ background:linear-gradient(90deg,#eadbc0 50%,#633967 50%);
+}
+
+.forest{
+ background:linear-gradient(90deg,#e3eacb 50%,#38643c 50%);
+}
+
+.midnight{
+ background:linear-gradient(90deg,#bdc9da 50%,#35425b 50%);
+}
+
+.volcano{
+ background:linear-gradient(90deg,#f0d0b0 50%,#80322b 50%);
+}
+
+.neon{
+ background:linear-gradient(90deg,#c9fffb 50%,#25344f 50%);
+}
+
+.gold{
+ background:linear-gradient(90deg,#fff1ad 50%,#8c6720 50%);
+}
+
+.frame{
+ height:65px;
+ border-radius:10px;
+ display:grid;
+ place-items:center;
+ font-size:30px;
+}
+
+/* ================= OPTIONS ================= */
+
+.options{
+ display:grid;
+ grid-template-columns:repeat(3,1fr);
+ gap:9px;
+}
+
+.option{
+ padding:13px 9px;
+ border-radius:11px;
+ background:#18223a;
+ color:white;
+ border:1px solid rgba(255,255,255,.08);
+ font-size:10px;
+ font-weight:800;
+}
+
+.option.active{
+ border-color:var(--cyan);
+ background:rgba(53,217,255,.1);
+}
+
+/* ================= RESULT ================= */
+
+.result{
+ text-align:center;
+}
+
+.resultIcon{
+ font-size:75px;
+ margin-bottom:8px;
+}
+
+.result h2{
+ font-size:35px;
+}
+
+.result p{
+ color:var(--muted);
+ margin:10px 0 20px;
+}
+
+.resultButtons{
+ display:flex;
+ gap:9px;
+}
+
+.primary{
+ flex:1;
+ padding:14px;
+ border-radius:12px;
+ background:linear-gradient(135deg,#8067ff,#35bfff);
+ color:white;
+ font-weight:900;
+}
+
+.secondary{
+ flex:1;
+ padding:14px;
+ border-radius:12px;
+ background:#1c2741;
+ color:white;
+ font-weight:800;
+}
+
+/* ================= FRIEND ================= */
+
+.codeBox{
+ padding:25px;
+ background:#151f37;
+ border-radius:17px;
+ text-align:center;
+}
+
+.code{
+ color:var(--cyan);
+ font-size:33px;
+ letter-spacing:7px;
+ font-weight:900;
+ margin:10px 0 15px;
+}
+
+.input{
+ width:100%;
+ padding:14px;
+ border-radius:11px;
+ background:#080e1d;
+ border:1px solid rgba(255,255,255,.08);
+ color:white;
+ outline:none;
+ margin:10px 0;
+}
+
+.fullButton{
+ width:100%;
+ padding:14px;
+ border-radius:11px;
+ color:white;
+ background:linear-gradient(135deg,#8067ff,#35bfff);
+ font-weight:900;
+}
+
+/* ================= TOAST ================= */
+
+.toast{
+ position:fixed;
+ bottom:25px;
+ left:50%;
+ transform:translateX(-50%) translateY(100px);
+ padding:13px 19px;
+ border-radius:13px;
+ background:#18233b;
+ border:1px solid rgba(255,255,255,.1);
+ box-shadow:0 15px 40px rgba(0,0,0,.4);
+ opacity:0;
+ transition:.3s;
+ z-index:100;
+ font-size:12px;
+ font-weight:800;
+}
+
+.toast.show{
+ opacity:1;
+ transform:translateX(-50%) translateY(0);
+}
+
+/* ================= RESPONSIVE ================= */
+
+@media(max-width:1050px){
+
+ .gameArea{
+  grid-template-columns:1fr;
+ }
+
+ .boardOuter{
+  max-width:900px;
+  margin:auto;
+ }
+
+ .side{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+ }
+
+ .status,
+ .sideButtons{
+  grid-column:1/-1;
+ }
+
+}
+
+@media(max-width:750px){
+
+ .modes{
+  grid-template-columns:1fr 1fr;
+ }
+
+ .homePanels{
+  grid-template-columns:1fr;
+ }
+
+ .shopGrid{
+  grid-template-columns:1fr 1fr;
+ }
+
+ .boardOuter{
+  padding:5px;
+  border-radius:14px;
+ }
+
+ .board{
+  border-radius:8px;
+ }
+
+ .piece{
+  font-size:clamp(30px,10vw,62px);
+ }
+
+}
+
+@media(max-width:500px){
+
+ .app{
+  width:96%;
+ }
+
+ .top{
+  margin-bottom:15px;
+ }
+
+ .logoText{
+  font-size:15px;
+ }
+
+ .logoIcon{
+  width:43px;
+  height:43px;
+ }
+
+ .modes{
+  grid-template-columns:1fr;
+ }
+
+ .hero h1{
+  font-size:45px;
+  letter-spacing:-3px;
+ }
+
+ .stats{
+  gap:6px;
+ }
+
+ .stat{
+  padding:12px 7px;
+ }
+
+ .stat b{
+  font-size:18px;
+ }
+
+ .side{
+  grid-template-columns:1fr;
+ }
+
+ .shopGrid{
+  grid-template-columns:1fr 1fr;
+ }
+
+ .options{
+  grid-template-columns:1fr 1fr;
+ }
+}
+</style>
+</head>
+
+<body>
+
+<div class="app">
+
+<header class="top">
+
+<div class="logo">
+ <div class="logoIcon">♛</div>
+ <div class="logoText">
+  ROYAL ARENA
+  <small>CHESS</small>
+ </div>
+</div>
+
+<div class="wallet">
+ <div class="coins">🪙 <span id="coins">500</span></div>
+</div>
+
+</header>
+
+
+<!-- ================= HOME ================= -->
+
+<section id="home">
+
+<div class="hero">
+ <div class="tag">♛ WELCOME TO THE ARENA</div>
+
+ <h1>PLAY. <span>CONQUER.</span> RULE.</h1>
+
+ <p>
+ Master the board, defeat your rivals, unlock cosmetics
+ and build your Royal Arena legacy.
+ </p>
+</div>
+
+
+<div class="modes">
+
+<button class="mode m1" onclick="startLocal()">
+ <span>LOCAL</span>
+ <div class="modeIcon">♟♞</div>
+ <h3>2 PLAYERS</h3>
+ <p>Play against another person on the same device.</p>
+</button>
+
+<button class="mode m2" onclick="openBot()">
+ <span>AI</span>
+ <div class="modeIcon">♜⚙</div>
+ <h3>VS BOT</h3>
+ <p>Choose Easy, Medium, Hard or Extreme.</p>
+</button>
+
+<button class="mode m3" onclick="openFriend()">
+ <span>CODE</span>
+ <div class="modeIcon">♚🤝</div>
+ <h3>VERSUS A FRIEND</h3>
+ <p>Create or enter a private match code.</p>
+</button>
+
+<button class="mode m4" onclick="onlineSoon()">
+ <span>SOON</span>
+ <div class="modeIcon">🌐</div>
+ <h3>ONLINE MATCH</h3>
+ <p>Real internet multiplayer is coming soon.</p>
+</button>
+
+</div>
+
+
+<div class="homePanels">
+
+<div class="panel">
+ <div class="panelTitle">YOUR ARENA PROFILE</div>
+
+ <div class="stats">
+
+  <div class="stat">
+   <b id="points">0</b>
+   <small>POINTS</small>
+  </div>
+
+  <div class="stat">
+   <b id="wins">0</b>
+   <small>WINS</small>
+  </div>
+
+  <div class="stat">
+   <b id="games">0</b>
+   <small>GAMES</small>
+  </div>
+
+ </div>
+</div>
+
+
+<div class="panel">
+
+ <div class="panelTitle">ARENA MENU</div>
+
+ <div class="quick">
+
+  <button class="main" onclick="openCustomize()">
+   🎨 CUSTOMIZE
+  </button>
+
+  <button onclick="openShop()">
+   🛒 SHOP
+  </button>
+
+ </div>
+
+</div>
+
+</div>
+
+</section>
+
+
+<!-- ================= GAME ================= -->
+
+<section id="game">
+
+<div class="gameHeader">
+
+ <button class="headerButton" onclick="goHome()">
+  ← HOME
+ </button>
+
+ <div class="gameName">
+  <h2 id="gameTitle">ROYAL ARENA</h2>
+  <small id="gameSubtitle">WHITE TO MOVE</small>
+ </div>
+
+ <button class="headerButton" onclick="openCustomize()">
+  ⚙
+ </button>
+
+</div>
+
+
+<div class="gameArea">
+
+<div class="boardOuter">
+ <div id="board" class="board"></div>
+</div>
+
+
+<div class="side">
+
+<div class="clock active" id="whiteClock">
+ <div class="clockTop">
+  <span>♙ WHITE</span>
+  <span>PLAYER 1</span>
+ </div>
+ <div class="clockTime" id="whiteTime">10:00</div>
+</div>
+
+
+<div class="clock" id="blackClock">
+ <div class="clockTop">
+  <span>♟ BLACK</span>
+  <span id="blackName">PLAYER 2</span>
+ </div>
+ <div class="clockTime" id="blackTime">10:00</div>
+</div>
+
+
+<div class="status">
+ <b id="turnText">WHITE TO MOVE</b>
+ <br><br>
+ Select a piece and then choose where you want to move it.
+</div>
+
+
+<div class="sideButtons">
+ <button onclick="restartGame()">↻ RESTART</button>
+ <button onclick="openShop()">🛒 SHOP</button>
+ </div>
+
+</div>
+
+</div>
+
+</section>
+
+</div>
+
+
+<!-- ================= BOT MODAL ================= -->
+
+<div id="botModal" class="modal">
+
+<div class="modalBox">
+
+<div class="modalHeader">
+ <h2>Choose Your Bot</h2>
+ <button class="close" onclick="closeModal('botModal')">×</button>
+</div>
+
+<div class="options">
+
+<button class="option" onclick="startBot('easy')">
+ 🟢 EASY
+ <br><small>Relaxed</small>
+</button>
+
+<button class="option" onclick="startBot('medium')">
+ 🔵 MEDIUM
+ <br><small>Smart</small>
+</button>
+
+<button class="option" onclick="startBot('hard')">
+ 🟠 HARD
+ <br><small>Strong</small>
+</button>
+
+<button class="option" onclick="startBot('extreme')">
+ 🔴 EXTREME
+ <br><small>Elite</small>
+</button>
+
+</div>
+
+</div>
+</div>
+
+
+<!-- ================= SHOP ================= -->
+
+<div id="shopModal" class="modal">
+
+<div class="modalBox">
+
+<div class="modalHeader">
+ <h2>🛒 Arena Shop</h2>
+ <button class="close" onclick="closeModal('shopModal')">×</button>
+</div>
+
+<p style="color:#8995b2;font-size:11px;margin-bottom:17px">
+ Spend your coins on cosmetics and make your arena yours.
+</p>
+
+<div class="shopGrid">
+
+<!-- BOARD THEMES -->
+
+<div class="shopCard">
+ <div class="shopPreview ocean"></div>
+ <h4>Ocean Arena</h4>
+ <p>Cool blue tournament board.</p>
+ <button class="shopButton" onclick="buy('ocean',150)">150 🪙</button>
+</div>
+
+<div class="shopCard">
+ <div class="shopPreview royal"></div>
+ <h4>Royal Purple</h4>
+ <p>Majestic purple arena.</p>
+ <button class="shopButton" onclick="buy('royal',250)">250 🪙</button>
+</div>
+
+<div class="shopCard">
+ <div class="shopPreview forest"></div>
+ <h4>Forest King</h4>
+ <p>Natural green board.</p>
+ <button class="shopButton" onclick="buy('forest',350)">350 🪙</button>
+</div>
+
+<div class="shopCard">
+ <div class="shopPreview midnight"></div>
+ <h4>Midnight</h4>
+ <p>Dark competitive board.</p>
+ <button class="shopButton" onclick="buy('midnight',500)">500 🪙</button>
+</div>
+
+<div class="shopCard">
+ <div class="shopPreview volcano"></div>
+ <h4>Volcano</h4>
+ <p>Hot red battle arena.</p>
+ <button class="shopButton" onclick="buy('volcano',650)">650 🪙</button>
+</div>
+
+<div class="shopCard">
+ <div class="shopPreview neon"></div>
+ <h4>Neon Cyber</h4>
+ <p>Futuristic arena style.</p>
+ <button class="shopButton" onclick="buy('neon',800)">800 🪙</button>
+</div>
+
+<div class="shopCard">
+ <div class="shopPreview gold"></div>
+ <h4>Golden Crown</h4>
+ <p>For the kings of chess.</p>
+ <button class="shopButton" onclick="buy('gold',1000)">1000 🪙</button>
+</div>
+
+<!-- EXTRA COSMETICS -->
+
+<div class="shopCard">
+ <div class="frame" style="background:#8067ff">👑</div>
+ <h4>King Avatar</h4>
+ <p>Unlock a royal profile avatar.</p>
+ <button class="shopButton" onclick="buyCosmetic('king',600)">600 🪙</button>
+</div>
+
+<div class="shopCard">
+ <div class="frame" style="background:#35d9ff">⚡</div>
+ <h4>Lightning Effect</h4>
+ <p>Special move effect.</p>
+ <button class="shopButton" onclick="buyCosmetic('lightning',750)">750 🪙</button>
+</div>
+
+<div class="shopCard">
+ <div class="frame" style="background:#ff5577">🔥</div>
+ <h4>Fire Effect</h4>
+ <p>Powerful capture effect.</p>
+ <button class="shopButton" onclick="buyCosmetic('fire',900)">900 🪙</button>
+</div>
+
+<div class="shopCard">
+ <div class="frame" style="background:#ffd166">💎</div>
+ <h4>Diamond Crown</h4>
+ <p>Premium arena badge.</p>
+ <button class="shopButton" onclick="buyCosmetic('diamond',1500)">1500 🪙</button>
+</div>
+
+<div class="shopCard">
+ <div class="frame" style="background:#39df91">🏆</div>
+ <h4>Champion Badge</h4>
+ <p>Show your victories.</p>
+ <button class="shopButton" onclick="buyCosmetic('champion',2000)">2000 🪙</button>
+</div>
+
+</div>
+
+</div>
+</div>
+
+
+<!-- ================= CUSTOMIZE ================= -->
+
+<div id="customModal" class="modal">
+
+<div class="modalBox">
+
+<div class="modalHeader">
+ <h2>🎨 Customize Arena</h2>
+ <button class="close" onclick="closeModal('customModal')">×</button>
+</div>
+
+<h4 style="color:#8995b2;font-size:10px;margin-bottom:10px">
+ BOARD
+</h4>
+
+<div class="options">
+
+<button class="option" onclick="equipTheme('classic')">
+ Classic
+</button>
+
+<button class="option" onclick="equipTheme('ocean')">
+ Ocean
+</button>
+
+<button class="option" onclick="equipTheme('royal')">
+ Royal
+</button>
+
+<button class="option" onclick="equipTheme('forest')">
+ Forest
+</button>
+
+<button class="option" onclick="equipTheme('midnight')">
+ Midnight
+</button>
+
+<button class="option" onclick="equipTheme('volcano')">
+ Volcano
+</button>
+
+<button class="option" onclick="equipTheme('neon')">
+ Neon
+</button>
+
+<button class="option" onclick="equipTheme('gold')">
+ Golden
+</button>
+
+</div>
+
+
+<h4 style="color:#8995b2;font-size:10px;margin:20px 0 10px">
+ TIME CONTROL
+</h4>
+
+<div class="options">
+
+<button class="option" onclick="setTime(3)">
+ ⚡ 3 MIN
+</button>
+
+<button class="option" onclick="setTime(5)">
+ 🔥 5 MIN
+</button>
+
+<button class="option" onclick="setTime(10)">
+ ♟ 10 MIN
+</button>
+
+<button class="option" onclick="setTime(15)">
+ 🏆 15 MIN
+</button>
+
+<button class="option" onclick="setTime(30)">
+ 👑 30 MIN
+</button>
+
+</div>
+
+
+<h4 style="color:#8995b2;font-size:10px;margin:20px 0 10px">
+ SOUND
+</h4>
+
+<button class="option active" id="soundButton"
+ style="width:100%"
+ onclick="toggleSound()">
+ 🔊 SOUND ON
+</button>
+
+</div>
+</div>
+
+
+<!-- ================= FRIEND ================= -->
+
+<div id="friendModal" class="modal">
+
+<div class="modalBox">
+
+<div class="modalHeader">
+ <h2>🤝 Versus a Friend</h2>
+ <button class="close" onclick="closeModal('friendModal')">×</button>
+</div>
+
+<div class="codeBox">
+
+<p style="color:#8995b2;font-size:10px">
+ YOUR MATCH CODE
+</p>
+
+<div class="code" id="matchCode">------</div>
+
+<button class="fullButton" onclick="createCode()">
+ CREATE MATCH CODE
+</button>
+
+</div>
+
+<div style="text-align:center;color:#8995b2;margin:15px">
+ OR
+</div>
+
+<input
+ id="joinCode"
+ class="input"
+ placeholder="Enter your friend's 6-digit code"
+>
+
+<button class="fullButton" onclick="joinFriend()">
+ JOIN MATCH
+</button>
+
+</div>
+</div>
+
+
+<!-- ================= RESULT ================= -->
+
+<div id="resultModal" class="modal">
+
+<div class="modalBox result">
+
+<div class="resultIcon" id="resultIcon">
+ 🏆
+</div>
+
+<h2 id="resultTitle">
+ CHECKMATE!
+</h2>
+
+<p id="resultText">
+ White wins the arena.
+</p>
+
+<div class="resultButtons">
+
+<button class="primary" onclick="playAgain()">
+ PLAY AGAIN
+</button>
+
+<button class="secondary" onclick="goHome()">
+ HOME
+</button>
+
+</div>
+
+</div>
+</div>
+
+
+<div id="toast" class="toast"></div>
+
+
+<script>
+
+/* =====================================================
+   ROYAL ARENA CHESS ENGINE
+===================================================== */
+
+const PIECES={
+ w:{
+  k:"♔",q:"♕",r:"♖",b:"♗",n:"♘",p:"♙"
+ },
+ b:{
+  k:"♚",q:"♛",r:"♜",b:"♝",n:"♞",p:"♟"
+ }
+};
+
+const START=[
+ ["br","bn","bb","bq","bk","bb","bn","br"],
+ ["bp","bp","bp","bp","bp","bp","bp","bp"],
+ [null,null,null,null,null,null,null,null],
+ [null,null,null,null,null,null,null,null],
+ [null,null,null,null,null,null,null,null],
+ [null,null,null,null,null,null,null,null],
+ ["wp","wp","wp","wp","wp","wp","wp","wp"],
+ ["wr","wn","wb","wq","wk","wb","wn","wr"]
+];
+
+let board=[];
+let turn="w";
+let selected=null;
+let legal=[];
+let lastMove=null;
+
+let gameMode="local";
+let botLevel="medium";
+let gameOver=false;
+
+let whiteTime=600;
+let blackTime=600;
+let timer=null;
+
+let soundOn=true;
+let theme=localStorage.getItem("theme")||"classic";
+
+let coins=Number(localStorage.getItem("coins")||500);
+let points=Number(localStorage.getItem("points")||0);
+let wins=Number(localStorage.getItem("wins")||0);
+let games=Number(localStorage.getItem("games")||0);
+
+let owned=JSON.parse(
+ localStorage.getItem("owned")||
+ '["classic"]'
+);
+
+let audio=null;
+
+
+/* =====================================================
+   UI
+===================================================== */
+
+function updateUI(){
+
+ document.getElementById("coins").textContent=coins;
+ document.getElementById("points").textContent=points;
+ document.getElementById("wins").textContent=wins;
+ document.getElementById("games").textContent=games;
+
+ localStorage.setItem("coins",coins);
+ localStorage.setItem("points",points);
+ localStorage.setItem("wins",wins);
+ localStorage.setItem("games",games);
+ localStorage.setItem("owned",JSON.stringify(owned));
+}
+
+updateUI();
+
+
+function openModal(id){
+ document.getElementById(id).classList.add("show");
+}
+
+function closeModal(id){
+ document.getElementById(id).classList.remove("show");
+}
+
+function openBot(){
+ openModal("botModal");
+}
+
+function openShop(){
+ openModal("shopModal");
+}
+
+function openCustomize(){
+ openModal("customModal");
+}
+
+
+/* =====================================================
+   START GAME
+===================================================== */
+
+function startLocal(){
+
+ gameMode="local";
+
+ closeModal("botModal");
+
+ startGame(
+  "2 PLAYERS",
+  "PLAYER 2"
+ );
+}
+
+
+function startBot(level){
+
+ botLevel=level;
+ gameMode="bot";
+
+ closeModal("botModal");
+
+ const names={
+  easy:"EASY BOT",
+  medium:"MEDIUM BOT",
+  hard:"HARD BOT",
+  extreme:"EXTREME BOT"
+ };
+
+ startGame(
+  "VS "+names[level],
+  names[level]
+ );
+}
+
+
+function startGame(title,blackName){
+
+ document.getElementById("home").style.display="none";
+ document.getElementById("game").classList.add("active");
+
+ document.getElementById("gameTitle").textContent=title;
+ document.getElementById("blackName").textContent=blackName;
+
+ board=START.map(x=>x.slice());
+
+ turn="w";
+ selected=null;
+ legal=[];
+ lastMove=null;
+ gameOver=false;
+
+ whiteTime=getTime()*60;
+ blackTime=getTime()*60;
+
+ renderBoard();
+ updateClock();
+
+ startTimer();
+
+ updateTurn();
+}
+
+
+/* =====================================================
+   BOARD
+===================================================== */
+
+function renderBoard(){
+
+ const el=document.getElementById("board");
+
+ el.innerHTML="";
+
+ for(let r=0;r<8;r++){
+
+  for(let c=0;c<8;c++){
+
+   const sq=document.createElement("div");
+
+   sq.className="square "+
+    ((r+c)%2===0?"light":"dark");
+
+   const piece=board[r][c];
+
+   if(selected &&
+      selected.r===r &&
+      selected.c===c){
+
+    sq.classList.add("selected");
+   }
+
+   if(legal.some(
+    m=>m.r===r&&m.c===c
+   )){
+
+    if(piece)
+     sq.classList.add("capture");
+    else
+     sq.classList.add("legal");
+   }
+
+   if(lastMove &&
+    (
+     (lastMove.a.r===r&&lastMove.a.c===c)||
+     (lastMove.b.r===r&&lastMove.b.c===c)
+    )){
+
+    sq.classList.add("last");
+   }
+
+   if(piece){
+
+    const p=document.createElement("div");
+
+    p.className=
+     "piece "+
+     (piece[0]==="w"?
+      "whitePiece":
+      "blackPiece");
+
+    p.textContent=PIECES[piece[0]][piece[1]];
+
+    sq.appendChild(p);
+   }
+
+   sq.onclick=()=>squareClick(r,c);
+
+   el.appendChild(sq);
+  }
+ }
+
+ applyTheme();
+}
+
+
+function squareClick(r,c){
+
+ if(gameOver)return;
+
+ if(gameMode==="bot"&&turn==="b")
+  return;
+
+ const piece=board[r][c];
+
+ if(selected){
+
+  const move=legal.find(
+   x=>x.r===r&&x.c===c
+  );
+
+  if(move){
+
+   makeMove(selected,{r,c});
+   return;
+  }
+
+  if(piece&&piece[0]===turn){
+
+   selectPiece(r,c);
+   return;
+  }
+
+  selected=null;
+  legal=[];
+
+  renderBoard();
+  return;
+ }
+
+ if(piece&&piece[0]===turn)
+  selectPiece(r,c);
+}
+
+
+function selectPiece(r,c){
+
+ selected={r,c};
+
+ legal=getLegalMoves(r,c);
+
+ renderBoard();
+
+ playSound("click");
+}
+
+
+/* =====================================================
+   CHESS RULES
+===================================================== */
+
+function inside(r,c){
+ return r>=0&&r<8&&c>=0&&c<8;
+}
+
+function opposite(color){
+ return color==="w"?"b":"w";
+}
+
+function clone(b){
+ return b.map(row=>row.slice());
+}
+
+function pseudo(r,c,b=board){
+
+ const p=b[r][c];
+
+ if(!p)return[];
+
+ const color=p[0];
+ const type=p[1];
+
+ const moves=[];
+
+ function add(nr,nc){
+
+  if(!inside(nr,nc))return;
+
+  if(!b[nr][nc])
+   moves.push({r:nr,c:nc});
+
+  else if(b[nr][nc][0]!==color)
+   moves.push({r:nr,c:nc});
+ }
+
+
+ if(type==="p"){
+
+  const dir=color==="w"?-1:1;
+  const start=color==="w"?6:1;
+
+  if(
+   inside(r+dir,c)&&
+   !b[r+dir][c]
+  ){
+
+   moves.push({
+    r:r+dir,
+    c:c
+   });
+
+   if(
+    r===start&&
+    !b[r+2*dir][c]
+   ){
+
+    moves.push({
+     r:r+2*dir,
+     c:c
+    });
+   }
+  }
+
+  for(const dc of[-1,1]){
+
+   const nr=r+dir;
+   const nc=c+dc;
+
+   if(
+    inside(nr,nc)&&
+    b[nr][nc]&&
+    b[nr][nc][0]!==color
+   ){
+
+    moves.push({
+     r:nr,
+     c:nc
+    });
+   }
+  }
+ }
+
+
+ if(type==="n"){
+
+  [
+   [-2,-1],[-2,1],
+   [-1,-2],[-1,2],
+   [1,-2],[1,2],
+   [2,-1],[2,1]
+  ].forEach(x=>add(r+x[0],c+x[1]));
+ }
+
+
+ if(type==="k"){
+
+  for(let dr=-1;dr<=1;dr++){
+
+   for(let dc=-1;dc<=1;dc++){
+
+    if(dr||dc)
+     add(r+dr,c+dc);
+   }
+  }
+ }
+
+
+ if(
+  type==="b"||
+  type==="r"||
+  type==="q"
+ ){
+
+  let dirs=[];
+
+  if(type==="b"||type==="q"){
+
+   dirs.push(
+    [-1,-1],
+    [-1,1],
+    [1,-1],
+    [1,1]
+   );
+  }
+
+  if(type==="r"||type==="q"){
+
+   dirs.push(
+    [-1,0],
+    [1,0],
+    [0,-1],
+    [0,1]
+   );
+  }
+
+  for(const d of dirs){
+
+   let nr=r+d[0];
+   let nc=c+d[1];
+
+   while(inside(nr,nc)){
+
+    if(!b[nr][nc]){
+
+     moves.push({
+      r:nr,
+      c:nc
+     });
+
+    }else{
+
+     if(
+      b[nr][nc][0]!==color
+     ){
+
+      moves.push({
+       r:nr,
+       c:nc
+      });
+     }
+
+     break;
+    }
+
+    nr+=d[0];
+    nc+=d[1];
+   }
+  }
+ }
+
+ return moves;
+}
+
+
+function findKing(color,b=board){
+
+ for(let r=0;r<8;r++){
+
+  for(let c=0;c<8;c++){
+
+   if(b[r][c]===color+"k")
+    return {r,c};
+  }
+ }
+
+ return null;
+}
+
+
+function attacked(r,c,by,b=board){
+
+ for(let rr=0;rr<8;rr++){
+
+  for(let cc=0;cc<8;cc++){
+
+   const p=b[rr][cc];
+
+   if(!p||p[0]!==by)
+    continue;
+
+   if(p[1]==="p"){
+
+    const dir=by==="w"?-1:1;
+
+    if(
+     rr+dir===r&&
+     Math.abs(cc-c)===1
+    )
+     return true;
+
+   }else{
+
+    const moves=pseudo(rr,cc,b);
+
+    if(
+     moves.some(
+      x=>x.r===r&&x.c===c
+     )
+    )
+     return true;
+   }
+  }
+ }
+
+ return false;
+}
+
+
+function inCheck(color,b=board){
+
+ const k=findKing(color,b);
+
+ if(!k)return true;
+
+ return attacked(
+  k.r,k.c,
+  opposite(color),
+  b
+ );
+}
+
+
+function getLegalMoves(r,c,b=board){
+
+ const p=b[r][c];
+
+ if(!p)return[];
+
+ const color=p[0];
+
+ return pseudo(r,c,b).filter(m=>{
+
+  const test=clone(b);
+
+  test[m.r][m.c]=test[r][c];
+  test[r][c]=null;
+
+  if(
+   p[1]==="p"&&
+   (m.r===0||m.r===7)
+  ){
+
+   test[m.r][m.c]=color+"q";
+  }
+
+  return !inCheck(color,test);
+ });
+}
+
+
+function allMoves(color,b=board){
+
+ const moves=[];
+
+ for(let r=0;r<8;r++){
+
+  for(let c=0;c<8;c++){
+
+   if(
+    b[r][c]&&
+    b[r][c][0]===color
+   ){
+
+    getLegalMoves(r,c,b)
+     .forEach(to=>{
+
+      moves.push({
+       from:{r,c},
+       to
+      });
+
+     });
+   }
+  }
+ }
+
+ return moves;
+}
+
+
+/* =====================================================
+   MOVE
+===================================================== */
+
+function makeMove(from,to){
+
+ const moving=board[from.r][from.c];
+ const captured=board[to.r][to.c];
+
+ board[to.r][to.c]=moving;
+ board[from.r][from.c]=null;
+
+ let promotion=false;
+
+ if(
+  moving[1]==="p"&&
+  (to.r===0||to.r===7)
+ ){
+
+  board[to.r][to.c]=moving[0]+"q";
+  promotion=true;
+ }
+
+ lastMove={
+  a:from,
+  b:to
+ };
+
+ selected=null;
+ legal=[];
+
+ if(promotion)
+  playSound("promotion");
+
+ else if(captured)
+  playSound("capture");
+
+ else
+  playSound("move");
+
+ turn=opposite(turn);
+
+ renderBoard();
+
+ const checked=inCheck(turn);
+
+ if(checked)
+  playSound("check");
+
+ const moves=allMoves(turn);
+
+ if(moves.length===0){
+
+  gameOver=true;
+
+  stopTimer();
+
+  if(checked)
+   finish(opposite(turn),"CHECKMATE!");
+
+  else
+   drawGame();
+
+  return;
+ }
+
+ updateTurn();
+
+ if(
+  gameMode==="bot"&&
+  turn==="b"
+ ){
+
+  setTimeout(botMove,400);
+ }
+}
+
+
+/* =====================================================
+   BOT
+===================================================== */
+
+const VALUE={
+ p:100,
+ n:320,
+ b:330,
+ r:500,
+ q:900,
+ k:20000
+};
+
+function evaluate(b){
+
+ let score=0;
+
+ for(let r=0;r<8;r++){
+
+  for(let c=0;c<8;c++){
+
+   const p=b[r][c];
+
+   if(!p)continue;
+
+   score+=
+    p[0]==="b"
+     ?VALUE[p[1]]
+     :-VALUE[p[1]];
+  }
+ }
+
+ return score;
+}
+
+
+function minimax(
+ b,
+ color,
+ depth,
+ alpha,
+ beta
+){
+
+ if(depth===0)
+  return evaluate(b);
+
+ const moves=allMoves(color,b);
+
+ if(!moves.length){
+
+  if(inCheck(color,b))
+   return color==="b"
+    ?-999999
+    :999999;
+
+  return 0;
+ }
+
+ let best=-Infinity;
+
+ for(const m of moves){
+
+  const test=clone(b);
+
+  const p=test[m.from.r][m.from.c];
+
+  test[m.to.r][m.to.c]=p;
+  test[m.from.r][m.from.c]=null;
+
+  if(
+   p[1]==="p"&&
+   (m.to.r===0||m.to.r===7)
+  ){
+
+   test[m.to.r][m.to.c]=p[0]+"q";
+  }
+
+  const score=
+   -minimax(
+    test,
+    opposite(color),
+    depth-1,
+    -beta,
+    -alpha
+   );
+
+  best=Math.max(best,score);
+
+  alpha=Math.max(alpha,score);
+
+  if(alpha>=beta)
+   break;
+ }
+
+ return best;
+}
+
+
+function botMove(){
+
+ if(
+  gameOver||
+  turn!=="b"
+ )
+  return;
+
+ const moves=allMoves("b");
+
+ if(!moves.length)return;
+
+ let chosen;
+
+ if(botLevel==="easy"){
+
+  chosen=
+   moves[
+    Math.floor(
+     Math.random()*moves.length
+    )
+   ];
+ }
+
+ else if(botLevel==="medium"){
+
+  const captures=
+   moves.filter(
+    m=>board[m.to.r][m.to.c]
+   );
+
+  const list=
+   captures.length?captures:moves;
+
+  chosen=
+   list[
+    Math.floor(
+     Math.random()*list.length
+    )
+   ];
+
+ }
+
+ else{
+
+  const depth=
+   botLevel==="hard"?2:3;
+
+  let best=-Infinity;
+  let candidates=[];
+
+  for(const m of moves){
+
+   const test=clone(board);
+
+   const p=test[m.from.r][m.from.c];
+
+   test[m.to.r][m.to.c]=p;
+   test[m.from.r][m.from.c]=null;
+
+   const score=
+    -minimax(
+     test,
+     "w",
+     depth-1,
+     -Infinity,
+     Infinity
+    );
+
+   if(score>best){
+
+    best=score;
+    candidates=[m];
+
+   }else if(score===best){
+
+    candidates.push(m);
+   }
+  }
+
+  chosen=
+   candidates[
+    Math.floor(
+     Math.random()*candidates.length
+    )
+   ];
+ }
+
+ makeMove(
+  chosen.from,
+  chosen.to
+ );
+}
+
+
+/* =====================================================
+   TIMER
+===================================================== */
+
+function getTime(){
+
+ return Number(
+  localStorage.getItem("time")||10
+ );
+}
+
+
+function setTime(min){
+
+ localStorage.setItem("time",min);
+
+ if(
+  document.getElementById("game")
+   .classList.contains("active")
+ ){
+
+  whiteTime=min*60;
+  blackTime=min*60;
+
+  updateClock();
+ }
+
+ toast("⏱️ Time set to "+min+" minutes");
+}
+
+
+function startTimer(){
+
+ stopTimer();
+
+ timer=setInterval(()=>{
+
+  if(gameOver)return;
+
+  if(turn==="w")
+   whiteTime--;
+  else
+   blackTime--;
+
+  updateClock();
+
+  if(
+   turn==="w"&&
+   whiteTime<=10&&
+   whiteTime>0
+  ){
+
+   playSound("tick");
+  }
+
+  if(
+   turn==="b"&&
+   blackTime<=10&&
+   blackTime>0
+  ){
+
+   playSound("tick");
+  }
+
+  if(whiteTime<=0){
+
+   whiteTime=0;
+   finish("b","TIME OUT!");
+  }
+
+  if(blackTime<=0){
+
+   blackTime=0;
+   finish("w","TIME OUT!");
+  }
+
+ },1000);
+}
+
+
+function stopTimer(){
+
+ if(timer){
+
+  clearInterval(timer);
+  timer=null;
+ }
+}
+
+
+function formatTime(sec){
+
+ sec=Math.max(0,sec);
+
+ return String(
+  Math.floor(sec/60)
+ ).padStart(2,"0")
+ +":"+
+ String(
+  sec%60
+ ).padStart(2,"0");
+}
+
+
+function updateClock(){
+
+ document.getElementById("whiteTime")
+  .textContent=formatTime(whiteTime);
+
+ document.getElementById("blackTime")
+  .textContent=formatTime(blackTime);
+
+ document.getElementById("whiteClock")
+  .classList.toggle("active",turn==="w");
+
+ document.getElementById("blackClock")
+  .classList.toggle("active",turn==="b");
+}
+
+
+/* =====================================================
+   STATUS
+===================================================== */
+
+function updateTurn(){
+
+ const text=
+  turn==="w"
+   ?"WHITE TO MOVE"
+   :"BLACK TO MOVE";
+
+ document.getElementById("turnText")
+  .textContent=text;
+
+ document.getElementById("gameSubtitle")
+  .textContent=
+   turn==="w"
+    ?"Your turn"
+    :(gameMode==="bot"
+      ?"Bot is thinking..."
+      :"Player 2's turn");
+
+ updateClock();
+}
+
+
+/* =====================================================
+   RESULTS
+===================================================== */
+
+function finish(winner,title){
+
+ gameOver=true;
+
+ stopTimer();
+
+ games++;
+
+ if(winner==="w"){
+
+  wins++;
+  points+=100;
+  coins+=50;
+
+ }else{
+
+  points+=25;
+  coins+=15;
+ }
+
+ updateUI();
+
+ document.getElementById("resultIcon")
+  .textContent=
+   winner==="w"?"🏆":"👑";
+
+ document.getElementById("resultTitle")
+  .textContent=title;
+
+ document.getElementById("resultText")
+  .textContent=
+   winner==="w"
+    ?"WHITE CONQUERS THE ROYAL ARENA!"
+    :"BLACK CONQUERS THE ROYAL ARENA!";
+
+ openModal("resultModal");
+
+ playSound(
+  winner==="w"?"win":"lose"
+ );
+}
+
+
+function drawGame(){
+
+ gameOver=true;
+
+ stopTimer();
+
+ games++;
+ points+=10;
+ coins+=10;
+
+ updateUI();
+
+ document.getElementById("resultIcon")
+  .textContent="🤝";
+
+ document.getElementById("resultTitle")
+  .textContent="DRAW!";
+
+ document.getElementById("resultText")
+  .textContent=
+   "Neither king could conquer the arena.";
+
+ openModal("resultModal");
+
+ playSound("draw");
+}
+
+
+/* =====================================================
+   RESTART
+===================================================== */
+
+function restartGame(){
+
+ const title=
+  document.getElementById("gameTitle")
+   .textContent;
+
+ const black=
+  document.getElementById("blackName")
+   .textContent;
+
+ startGame(title,black);
+}
+
+
+function playAgain(){
+
+ closeModal("resultModal");
+
+ restartGame();
+}
+
+
+function goHome(){
+
+ stopTimer();
+
+ closeModal("resultModal");
+
+ document.getElementById("game")
+  .classList.remove("active");
+
+ document.getElementById("home")
+  .style.display="block";
+}
+
+
+/* =====================================================
+   SHOP
+===================================================== */
+
+function buy(item,cost){
+
+ if(owned.includes(item)){
+
+  equipTheme(item);
+
+  toast("✨ Theme equipped!");
+  return;
+ }
+
+ if(coins<cost){
+
+  toast("❌ Not enough coins!");
+  return;
+ }
+
+ coins-=cost;
+
+ owned.push(item);
+
+ theme=item;
+
+ localStorage.setItem("theme",theme);
+
+ updateUI();
+
+ applyTheme();
+
+ toast("✨ Purchased and equipped!");
+}
+
+
+function buyCosmetic(item,cost){
+
+ const key="cosmetic_"+item;
+
+ if(localStorage.getItem(key)==="true"){
+
+  toast("✅ Already owned!");
+  return;
+ }
+
+ if(coins<cost){
+
+  toast("❌ Not enough coins!");
+  return;
+ }
+
+ coins-=cost;
+
+ localStorage.setItem(key,"true");
+
+ updateUI();
+
+ toast("✨ Cosmetic unlocked!");
+}
+
+
+function equipTheme(t){
+
+ if(!owned.includes(t)){
+
+  toast("🔒 Buy this theme in the shop first.");
+  return;
+ }
+
+ theme=t;
+
+ localStorage.setItem("theme",theme);
+
+ applyTheme();
+
+ toast("🎨 "+t.toUpperCase()+" equipped!");
+}
+
+
+function applyTheme(){
+
+ const colors={
+
+  classic:["#eee3c7","#5f7c5a"],
+
+  ocean:["#d8f3fa","#317895"],
+
+  royal:["#eadbc0","#633967"],
+
+  forest:["#e3eacb","#38643c"],
+
+  midnight:["#bdc9da","#35425b"],
+
+  volcano:["#f0d0b0","#80322b"],
+
+  neon:["#c9fffb","#25344f"],
+
+  gold:["#fff1ad","#8c6720"]
+
+ };
+
+ const c=
+  colors[theme]||
+  colors.classic;
+
+ document.querySelectorAll(".light")
+  .forEach(x=>{
+   x.style.background=c[0];
+  });
+
+ document.querySelectorAll(".dark")
+  .forEach(x=>{
+   x.style.background=c[1];
+  });
+}
+
+
+/* =====================================================
+   SOUND ENGINE
+===================================================== */
+
+/*
+ IMPORTANT:
+ The sounds are generated by the browser.
+ No external sound files are required.
+ This means the game can still work offline.
+*/
+
+function initAudio(){
+
+ if(!audio){
+
+  audio=
+   new(
+    window.AudioContext||
+    window.webkitAudioContext
+   )();
+ }
+
+ if(audio.state==="suspended")
+  audio.resume();
+}
+
+
+function tone(
+ frequency,
+ duration,
+ type="sine",
+ volume=.08,
+ delay=0
+){
+
+ if(!soundOn)return;
+
+ initAudio();
+
+ const osc=
+  audio.createOscillator();
+
+ const gain=
+  audio.createGain();
+
+ osc.type=type;
+ osc.frequency.value=frequency;
+
+ gain.gain.setValueAtTime(
+  .001,
+  audio.currentTime+delay
+ );
+
+ gain.gain.exponentialRampToValueAtTime(
+  volume,
+  audio.currentTime+delay+.01
+ );
+
+ gain.gain.exponentialRampToValueAtTime(
+  .001,
+  audio.currentTime+delay+duration
+ );
+
+ osc.connect(gain);
+ gain.connect(audio.destination);
+
+ osc.start(
+  audio.currentTime+delay
+ );
+
+ osc.stop(
+  audio.currentTime+delay+duration+.02
+ );
+}
+
+
+function playSound(type){
+
+ if(!soundOn)return;
+
+ initAudio();
+
+ if(type==="click"){
+
+  tone(520,.055,"sine",.035);
+ }
+
+ if(type==="move"){
+
+  tone(420,.08,"triangle",.07);
+  tone(570,.06,"triangle",.04,.06);
+ }
+
+ if(type==="capture"){
+
+  tone(180,.09,"square",.08);
+  tone(280,.1,"square",.06,.07);
+ }
+
+ if(type==="check"){
+
+  tone(650,.11,"sawtooth",.07);
+  tone(820,.13,"sawtooth",.06,.13);
+ }
+
+ if(type==="promotion"){
+
+  tone(500,.1,"triangle",.07);
+  tone(650,.1,"triangle",.07,.11);
+  tone(850,.18,"triangle",.08,.22);
+ }
+
+ if(type==="win"){
+
+  tone(520,.13,"triangle",.08);
+  tone(650,.13,"triangle",.08,.13);
+  tone(780,.13,"triangle",.08,.26);
+  tone(1050,.28,"triangle",.09,.39);
+ }
+
+ if(type==="lose"){
+
+  tone(450,.16,"sine",.07);
+  tone(350,.18,"sine",.06,.18);
+  tone(250,.28,"sine",.06,.38);
+ }
+
+ if(type==="draw"){
+
+  tone(400,.14,"triangle",.06);
+  tone(400,.14,"triangle",.06,.2);
+ }
+
+ if(type==="tick"){
+
+  tone(850,.045,"square",.035);
+ }
+}
+
+
+function toggleSound(){
+
+ soundOn=!soundOn;
+
+ const button=
+  document.getElementById("soundButton");
+
+ button.textContent=
+  soundOn
+   ?"🔊 SOUND ON"
+   :"🔇 SOUND OFF";
+
+ button.classList.toggle(
+  "active",
+  soundOn
+ );
+
+ if(soundOn)
+  playSound("click");
+}
+
+
+/* =====================================================
+   FRIEND MATCH
+===================================================== */
+
+function openFriend(){
+ openModal("friendModal");
+}
+
+
+function createCode(){
+
+ const code=
+  Math.floor(
+   100000+
+   Math.random()*900000
+  );
+
+ document.getElementById("matchCode")
+  .textContent=code;
+}
+
+
+function joinFriend(){
+
+ const code=
+  document.getElementById("joinCode")
+   .value.trim();
+
+ if(code.length!==6){
+
+  toast("Enter a 6-digit code.");
+  return;
+ }
+
+ closeModal("friendModal");
+
+ gameMode="friend";
+
+ startGame(
+  "VERSUS A FRIEND",
+  "PLAYER 2"
+ );
+}
+
+
+/* =====================================================
+   ONLINE
+===================================================== */
+
+function onlineSoon(){
+
+ toast(
+  "🌐 Online multiplayer is coming soon!"
+ );
+}
+
+
+/* =====================================================
+   TOAST
+===================================================== */
+
+let toastTimer;
+
+function toast(message){
+
+ const el=
+  document.getElementById("toast");
+
+ el.textContent=message;
+
+ el.classList.add("show");
+
+ clearTimeout(toastTimer);
+
+ toastTimer=setTimeout(()=>{
+  el.classList.remove("show");
+ },2200);
+}
+
+
+/* =====================================================
+   START
+===================================================== */
+
+applyTheme();
+updateUI();
+
+/*
+ Browser audio normally requires a user interaction.
+ The first click on a chess piece/button unlocks the audio engine.
+*/
+
+document.addEventListener(
+ "click",
+ ()=>{
+  if(soundOn)
+   initAudio();
+ },
+ {once:true}
+);
+
+</script>
+
+</body>
+</html>
